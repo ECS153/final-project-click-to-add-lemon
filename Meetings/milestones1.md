@@ -11,25 +11,25 @@
 
 ### Action Items:
 Marco:  
-- Last week : [x] Proposal write-up
+- Last week : Requirements gathering, Research, Proposal write-up
 - This week 
 - Blocked
 
-NanChen:
-- Last week 
+Nan Chen:
+- Last week:  Requirements gathering, Research
 - This week 
 - Blocked
 
 Hiroya:
 
-- Last week 
+- Last week : Requirements gathering, Research
 - This week 
 - Blocked
 
 
 Lea: 
 
-- Last week 
+- Last week :  Requirements gathering, Research
 - This week 
 - Blocked
 
