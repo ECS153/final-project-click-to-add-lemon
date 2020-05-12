@@ -12,24 +12,24 @@
 ### Action Items:
 Marco:  
 - Last week : Requirements gathering, Research, Proposal write-up
-- This week 
+- This week: User level keylogger
 - Blocked
 
 Nan Chen:
 - Last week:  Requirements gathering, Research
-- This week 
+- This week: Set up server, SMTP modules
 - Blocked
 
 Hiroya:
 
 - Last week : Requirements gathering, Research
-- This week 
+- This week: User level keylogger
 - Blocked
 
 
 Lea: 
 
 - Last week :  Requirements gathering, Research
-- This week 
+- This week: Front-end for keylogger
 - Blocked
 
