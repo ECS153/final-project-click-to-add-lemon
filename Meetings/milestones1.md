@@ -1,6 +1,9 @@
 ﻿
 # Meeting Notes
 ## Week 1 05/06
+
+[PROPOSAL VIDEO LINK](https://drive.google.com/file/d/1-VxUgaUnzCPCcKYwoCQ0ZaxsHoyGm-2P/view?usp=sharing)
+
 ### Group discussion:
 - Regular meeting time: Wednesday 8pm-9pm PST
 - Programming language: Python
