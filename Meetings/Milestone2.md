@@ -15,7 +15,8 @@
 ## 05/16
 ### Agenda:
 - Keylogger workflow
-- Which step in keylogger to attack
+- Choosing between various methods of implementing a kernel level keylogger (i.e. writing a device driver or interrupt handler, intercepting function calls)
+- Which step in keyboard driver pipeline the keylogger should attack
 
 ### Action Item:
 **Every member**:
