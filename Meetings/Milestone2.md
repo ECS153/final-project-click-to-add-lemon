@@ -2,6 +2,9 @@
 # Meeting Notes
 ## Week 2 
 ## 05/14
+
+[VIDEO LINK](https://drive.google.com/open?id=14jWHhBkx8p0jmgNvK3DYwN3EudLplNm5)
+
 ### Agenda:
 - Confer to do kernel level keylogger
 - How do split task
