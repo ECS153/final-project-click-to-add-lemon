@@ -27,3 +27,8 @@
  
 **Hiroya:**
 - Milestone2 video
+
+#### Obstacles
+
+When trying to implement the kernel keylogger, we encountered new concepts and terms that are unfamiliar to us which made implementation more difficult. There is a learning curve.
+
