@@ -1,0 +1,7 @@
+*.mod
+*.mod.c
+*.ko
+*-bkup
+*.o
+*.order
+*.symvers
