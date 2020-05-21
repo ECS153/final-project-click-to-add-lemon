@@ -8,9 +8,9 @@ Then, you get something like this (the address will be slightly different):
 
 `ffffffffb55700c0 d n_tty_ops`
 
-Then, in the keylog.c file, go to this line in hijack\_tty\_ldisc\_receive\_buf function and replace the address with the one from above. Do not forget to append the 0x in the beginning of the address: 
+Then, in the keylog.c file, go to this line and replace the address with the one from above. Do not forget to append the 0x in the beginning of the address: 
 
-`our_n_tty_ops = (struct tty_ldisc_ops *) 0xffffffffb8b700c0;`
+`#DEFINE N_TTY_OPS_ADDR 0xffffffffb8b700c0;`
 
 Save, then run makefile.
 
