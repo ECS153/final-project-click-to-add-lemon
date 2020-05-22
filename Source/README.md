@@ -10,7 +10,7 @@ Then, you get something like this (the address will be slightly different):
 
 Then, in the keylog.c file, go to this line and replace the address with the one from above. Do not forget to append the 0x in the beginning of the address: 
 
-`#DEFINE N_TTY_OPS_ADDR 0xffffffffb8b700c0;`
+`#define N_TTY_OPS_ADDR 0xffffffffb8b700c0;`
 
 Save, then run makefile.
 
@@ -30,4 +30,4 @@ Printk messages from the code can be seen with (Printf is not available for kern
 
 Keylogger module can be removed with:
 
-`$ rmmod keylog`
+`$ sudo rmmod keylog`
