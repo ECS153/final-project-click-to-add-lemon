@@ -6,3 +6,4 @@
 *.order
 *.symvers
 *.cmd
+*.d
