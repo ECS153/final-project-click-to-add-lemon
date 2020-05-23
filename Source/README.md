@@ -24,3 +24,11 @@ Keylogger module can be removed with:
 
 To see the logged file 
 `sudo cat /proc/buffer_file`
+
+The logged file will then be encrypted with
+`openssl enc -pass pass:password -aes-128-cbc -a -A -in out.txt -out encrypted.txt -nosalt`
+where password can be of any choice. This command is in linux distro
+
+`openssl enc -d -pass pass:password -aes-128-cbc -a -A -in encrypted.txt -out new.txt -nosalt`
+
+add `-p` flag for seeing the key used for encrypting
