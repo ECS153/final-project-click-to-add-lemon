@@ -3,4 +3,5 @@ Seems normal in terminal.
 Also functions as a currency converter.
 
 Usage:
+
 `$ ./Converter`
