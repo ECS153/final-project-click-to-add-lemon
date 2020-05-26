@@ -26,3 +26,21 @@
 **Nan:**
 - Create key log analysis code to look at the logged files and extracting data from it using logged keys and timestamps.
 
+## 05/25
+### Agenda:
+- Progress Update
+- Milestone Video topic
+- Current working goal
+
+### Action Item:
+**Hiroya:**
+- Milestone Video (40s): High-level concept
+**Shuyao:**
+- Milestone Video (40s): Bash script and phishing app
+- Design Doc
+**Marco:**
+- Milestone Video (40s): Sending data and encryption
+**Nan:**
+- Milestone Video (40s): Data analysis
+- Design Doc
+
