@@ -1,4 +1,4 @@
-all: analyze.c
-	gcc -Wall -Werror -o analyze analyze.c
+all: analyze.cpp
+	g++ -Wall -Werror -std=c++11 -o analyze analyze.cpp
 clean:
-	rm -f analyze
+	rm -f analyze output_data.txt
