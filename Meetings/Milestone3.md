@@ -28,8 +28,8 @@
 
 ## 05/25
 ### Agenda:
-- Progress Update
-- Milestone Video topic
+- Progress update
+- Milestone video topic
 - Current working goal
 
 ### Action Item:
@@ -41,9 +41,11 @@
 - Design Doc
 
 **Marco:**
-- Milestone Video (40s): Sending data and encryption
+- Milestone Video (40s): Sending logged file and encryption
+- Continue work on encryption
 
 **Nan:**
 - Milestone Video (40s): Data analysis
+- Continue work on data analysis
 - Design Doc
 
