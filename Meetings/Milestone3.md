@@ -35,11 +35,14 @@
 ### Action Item:
 **Hiroya:**
 - Milestone Video (40s): High-level concept
+
 **Shuyao:**
 - Milestone Video (40s): Bash script and phishing app
 - Design Doc
+
 **Marco:**
 - Milestone Video (40s): Sending data and encryption
+
 **Nan:**
 - Milestone Video (40s): Data analysis
 - Design Doc
