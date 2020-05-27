@@ -32,3 +32,5 @@ where password can be of any choice. This command is in linux distro
 `openssl enc -d -pass pass:password -aes-128-cbc -a -A -in encrypted.txt -out new.txt -nosalt`
 
 add `-p` flag for seeing the key used for encrypting
+
+Tweets are published to: [Link](https://twitter.com/Lemon12776532)

