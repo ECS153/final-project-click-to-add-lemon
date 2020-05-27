@@ -1,9 +1,8 @@
-﻿
-# Meeting Notes
+﻿# Meeting Notes
 ## Week 3 
 ## 05/20
 
-[VIDEO LINK]()
+[VIDEO LINK](https://drive.google.com/file/d/1nQCuNyVQRv1zTTg2LRGKtHm53L8EuGrV/view?usp=sharing)
 
 ### Agenda:
 - Increasing scope of Kernel level keylogger
