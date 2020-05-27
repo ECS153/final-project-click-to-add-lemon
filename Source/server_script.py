@@ -52,27 +52,12 @@ def updateConfig():
     #TODO update configuration file
     pass
 
-#hide message into image
-def stenographizeImage(ImagePath,NewImagePath,Text):
-    secret_image = lsb.hide(ImagePath,message=Text)
-    secret_image.save(NewImagePath)
-
 #reveal hidden message from image
 def deStenographizeImage(ImagePath):
     revealedMessage = lsb.reveal(ImagePath)
     #remove b'' strings from message
     revealedMessage = revealedMessage[2:len(revealedMessage)-1]
     return revealedMessage
-
-def encrypt(password, logged_file, encrypted_file):
-    enc_scheme = "-aes-128-cbc"
-    opts = "-a -A -nosalt"
-    openssl_cmd = 'openssl enc -pass pass:{} {} {} -in {} -out {} -nosalt 2> /dev/null '.format(password, enc_scheme, opts, logged_file, encrypted_file)
-
-    try:
-        os.system(openssl_cmd)
-    except Exception as e:
-        print(e)
 
 def decrypt(password, encrypted_file, logged_file):
     enc_scheme = "-aes-128-cbc"
@@ -86,8 +71,6 @@ def decrypt(password, encrypted_file, logged_file):
 
 # Setup dir structure
 def setup_dir():
-    if not os.path.exists("temp"):
-        os.mkdir("temp")
     if not os.path.exists("data"):
         os.mkdir("data")
 
