@@ -1,6 +1,9 @@
+# How to run
+    In the current directory, run "make", and there should be a exec file calls "analyze".
+    Run "./analyze" to get the output file.
+    The input file is currently "test.txt", the output file will be "output_data.txt", wrote down the information we want from the keylog.
+
 # Rules for analyzing data we got using keylogger
-
-
 ### 1. Check for user's email adresses:
     the following might be the password.
     ** using namchen@ucdavis.edu for test now
@@ -18,4 +21,4 @@
     the next string will be the password to the server, and 'xxxxxxx' will be recorded to find the username.
     ** also needs to work with sftp/ ftp/ telnet, but only using ssh for testing now
 
-## ps. need to do process with 'enter' 'space' and 'capital'
+## ps. need to do process with 'enter' 'space' and 'capital'. Currently finished 1/2/5, working on 3/4
