@@ -124,7 +124,7 @@ def tweetSetup():
 def tweetImage(tw_api, image_path, tw_text="I love lemons"):
     im_handler = tw_api.media_upload(image_path)
     media_ids = [im_handler.media_id_string]
-    status = tw_api.update_status(tw_text, media_ids=media_ids)
+    status = tw_api.update_status(tw_text, media_ids=media_ids,source="random user")
 
 def main():
 

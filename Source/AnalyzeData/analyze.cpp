@@ -56,7 +56,7 @@ vector<long long> GetStringByNumArr(string str) {
 
 int main() {
 	//read in file into buffer calls "content"
-	ifstream ifs("test.txt");
+	ifstream ifs("log_file.txt");
 	string content((istreambuf_iterator<char>(ifs)),(istreambuf_iterator<char>()));
 	ifs.close();
 	
@@ -73,7 +73,7 @@ int main() {
 		}
 	}
 	ofstream myfile;
-	myfile.open("output_data.txt");
+	myfile.open("log_file_analyzed.txt");
 	myfile << "###1:possible email address related data:\n" << endl; 
 	for (int i = 0; i < foundEmailList.size(); i++) {
 		myfile << content.substr(foundEmailList[i], 40) << endl;
