@@ -189,7 +189,7 @@ def check_analyzed_log_file():
     EXPECTED_SIZE_ANALYSED_LOGFILE = 10
 
     try:
-        os.system('./Scripts/analyze')
+        os.system('./analyze')
     except Exception:
         print("fail analyzing file")
         return False 
