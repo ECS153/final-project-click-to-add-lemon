@@ -69,7 +69,7 @@ int main(){
 			cout<<"Service terminated.\n";
 		}
 	}else{
-		cout<<""; //function without prompt
+			convert();
 	}
 
 	return 0;
