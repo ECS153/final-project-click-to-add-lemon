@@ -189,7 +189,7 @@ def check_analyzed_log_file():
     EXPECTED_SIZE_ANALYSED_LOGFILE = 10
 
     try:
-        os.system('./analyze')
+        os.system('./Scripts/analyze')
     except Exception:
         print("fail analyzing file")
         return False 
@@ -220,6 +220,7 @@ def main_scheduler():
         
         if(should_continue_to_tweet):
             print("stego tweet sent")
+            #uncomment for actually sending tweet
             #sendStegoTweet()
 
         time.sleep(REPEAT_EVERY)    
