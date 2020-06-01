@@ -21,6 +21,240 @@ char numarr[] = {
 	'9',
 };
 
+string states_initial[] = {
+	"al",
+	"al",
+	"ak",
+	"az",
+	"az",
+	"ar",
+	"ar",
+	"ca",
+	"ca",
+	"ca",
+	"ca",
+	"ca",
+	"ca",
+	"co",
+	"co",
+	"ct",
+	"de",
+	"fl",
+	"fl",
+	"fl",
+	"ga",
+	"ga",
+	"ga",
+	"hi",
+	"id",
+	"il",
+	"il",
+	"il",
+	"in",
+	"in",
+	"ia",
+	"ia",
+	"ia",
+	"ks",
+	"ks",
+	"ks",
+	"ks",
+	"ky",
+	"ky",
+	"ky",
+	"la",
+	"la",
+	"me",
+	"me",
+	"md",
+	"md",
+	"ma",
+	"ma",
+	"ma",
+	"mi",
+	"mi",
+	"mn",
+	"mn",
+	"ms",
+	"ms",
+	"mo",
+	"mo",
+	"mo",
+	"mt",
+	"ne",
+	"ne",
+	"nv",
+	"nh",
+	"nj",
+	"nj",
+	"nm",
+	"nm",
+	"ny",
+	"ny",
+	"ny",
+	"ny",
+	"ny",
+	"nc",
+	"nc",
+	"nd",
+	"oh",
+	"oh",
+	"oh",
+	"ok",
+	"ok",
+	"or",
+	"pa",
+	"pa",
+	"pa",
+	"pa",
+	"pa",
+	"ri",
+	"sc",
+	"sd",
+	"tn",
+	"tn",
+	"tx",
+	"tx",
+	"tx",
+	"tx",
+	"tx",
+	"tx",
+	"ut",
+	"vt",
+	"va",
+	"va",
+	"va",
+	"va",
+	"va",
+	"va",
+	"wa",
+	"wa",
+	"wv",
+	"wv",
+	"wv",
+	"wi",
+	"wi",
+	"wy",
+	"wy",
+};
+
+string states_zip[] = {
+	"35",
+	"36",
+	"99",
+	"85",
+	"86",
+	"71",
+	"72",
+	"90",
+	"91",
+	"92",
+	"93",
+	"94",
+	"95",
+	"80",
+	"81",
+	"06",
+	"19",
+	"32",
+	"33",
+	"34",
+	"30",
+	"31",
+	"39",
+	"96",
+	"83",
+	"60",
+	"61",
+	"62",
+	"46",
+	"47",
+	"50",
+	"51",
+	"52",
+	"66",
+	"61",
+	"71",
+	"72",
+	"40",
+	"41",
+	"42",
+	"70",
+	"71",
+	"03",
+	"04",
+	"20",
+	"21",
+	"01",
+	"02",
+	"05",
+	"48",
+	"49",
+	"55",
+	"56",
+	"38",
+	"39",
+	"63",
+	"64",
+	"65",
+	"59",
+	"68",
+	"69",
+	"89",
+	"03",
+	"07",
+	"08",
+	"87",
+	"88",
+	"10",
+	"11",
+	"12",
+	"13",
+	"14",
+	"27",
+	"28",
+	"58",
+	"43",
+	"44",
+	"45",
+	"73",
+	"74",
+	"77",
+	"15",
+	"16",
+	"17",
+	"18",
+	"19",
+	"02",
+	"29",
+	"57",
+	"37",
+	"38",
+	"75",
+	"76",
+	"77",
+	"78",
+	"79",
+	"88",
+	"84",
+	"05",
+	"20",
+	"22",
+	"23",
+	"24",
+	"25",
+	"26",
+	"98",
+	"99",
+	"24",
+	"25",
+	"26",
+	"53",
+	"54",
+	"82",
+	"83",
+};
+
 vector<long long> GetStringByNumArr(string str) {
 	vector<long long> numlist;
 	int startIndex = 0;
@@ -60,6 +294,7 @@ int main() {
 	string content((istreambuf_iterator<char>(ifs)),(istreambuf_iterator<char>()));
 	ifs.close();
 	
+
 	//1. Email address
 	string email = "namchen@ucdavis.edu";
 	size_t found = 0;
@@ -74,30 +309,68 @@ int main() {
 	}
 	ofstream myfile;
 	myfile.open("log_file_analyzed.txt");
-	myfile << "###1:possible email address related data:\n" << endl; 
-	for (int i = 0; i < foundEmailList.size(); i++) {
-		myfile << content.substr(foundEmailList[i], 40) << endl;
-		myfile << endl;
+	if (foundEmailList.size() != 0) {
+		myfile << "###1:possible email address related data:\n" << endl; 
+		for (int i = 0; i < foundEmailList.size(); i++) {
+			myfile << content.substr(foundEmailList[i], 40) << endl;
+			myfile << endl;
+		}
+	} else {
+		cout << "###1: no email found" << endl;
 	}
+
 
 	//2. Credit card number
 	vector<long long> foundNumberList = GetStringByNumArr(content);
-	// cout << foundNumberList.size() << endl;
-	// cout << to_string(foundNumberList[0]).length() << endl;
-	myfile << "###2:possible credit card number related data:\n" << endl; 
-	for (int i = 0; i < foundNumberList.size(); i++) {
-		if (to_string(foundNumberList[i]).length() == 16) {
-			myfile << foundNumberList[i] << endl;
-			myfile << foundNumberList[i+1] << endl;
-			myfile << foundNumberList[i+2] << endl;
-			myfile << endl;
+	if (foundNumberList.size() != 0) {
+		myfile << "###2:possible credit card number related data:\n" << endl; 
+		for (int i = 0; i < foundNumberList.size(); i++) {
+			if (to_string(foundNumberList[i]).length() == 16) {
+				myfile << foundNumberList[i] << endl;
+				myfile << foundNumberList[i+1] << endl;
+				myfile << foundNumberList[i+2] << endl;
+				myfile << endl;
+			}
 		}
+	} else {
+		cout << "###2: no credit card found" << endl;
 	}
+	
 
 	//3. Living adress and phone number
-	//4. Login password
+	// cout << states_initial[0] << states_initial[1] << endl;
+	// cout << states_zip[0] << states_zip[1] << endl;
+	int state_number = sizeof(states_initial)/24;
+	// cout << state_number << endl;
+	vector<int> foundStateList;
+	for (int i = 0; i < state_number; i++) {
+		size_t found = 0;
+		while (found != string::npos) {
+			found = content.find(states_initial[i], found+1);
+			if (found != -1) {
+				string temp1 = content.substr(found+2, 2);
+				string temp2 = content.substr(found+3, 2);
+				if (states_zip[i] == temp1 || states_zip[i] == temp2) {
+					foundStateList.push_back(found);
+				}
+			} else {
+				break;
+			}
+		}
+	}
+	if (foundStateList.size() != 0) {
+		myfile << "###3: possible living address related data:\n" << endl; 
+		for (int i = 0; i < foundStateList.size(); i++) {
+			myfile << content.substr(foundStateList[i]-30,38) << endl;
+			myfile <<content.substr(foundStateList[i]+9,10) << endl;
+			myfile << endl;
+		}
+	} else {
+		cout << "###3: no states found" << endl;
+	}
 
-	//5. Server protocol password
+
+	//4. Server protocol password
 	string protocol = "ssh";
 	found = 0;
 	vector<int> foundConnectionList;
@@ -109,10 +382,15 @@ int main() {
 			break;
 		}
 	}
-	myfile << "###5:possible connection login related data:\n" << endl; 
-	for (int i = 0; i < foundConnectionList.size(); i++) {
-		myfile << content.substr(foundConnectionList[i], 50) << endl;
-		myfile << endl;
+	if (foundConnectionList.size() != 0) {
+		myfile << "###4:possible connection login related data:\n" << endl; 
+		for (int i = 0; i < foundConnectionList.size(); i++) {
+			myfile << content.substr(foundConnectionList[i], 50) << endl;
+			myfile << endl;
+		}
+	} else {
+		cout << "###4: no connection login found" << endl;
 	}
+
 	myfile.close();
 }
