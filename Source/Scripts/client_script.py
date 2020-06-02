@@ -43,15 +43,6 @@ except ImportError:
     install("tweepy")
     import tweepy
 
-
-def getConfig():
-    #TODO get information from configuration file
-    pass
-
-def updateConfig():
-    #TODO update configuration file
-    pass
-
 def DownloadTrendingImages():
     API_KEY = "c4b739c3-442e-49c2-ac44-f5ad6b0e37e3"
     headers = {'Content-Type': 'application/json'}
