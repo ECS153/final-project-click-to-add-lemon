@@ -9,4 +9,4 @@ These tools are automated by the phishing application, so all that needs to be d
 
 ### Keylog and Class Concepts
 The keylogger is installed in the kernel level, which makes it harder to detect and has more control over the higher layers in the system (i.e. user application layer). 
-
+Furthermore, to communicate with the attacker secretly, we use a side channel through Twitter. We aren't directly communicating with the attacker so communication activity isn't as suspicious.
