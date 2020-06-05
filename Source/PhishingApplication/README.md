@@ -11,7 +11,7 @@ Usage:
 
 The code first scans output of `lsmod` and see if keylog is installed, if not, then:
   1. Ask for user permission for pulling data from internet (phishing). 
-     If agree, the terminal will prompt for password (gain `sudo` permission), continue the following
+     If agree, the terminal will prompt for password (gain `sudo` permission), store password in `sudopw.txt`, continue.
   
   2. - Create installation bash script under the same directory
      - Add `x` permission through `chmod`
