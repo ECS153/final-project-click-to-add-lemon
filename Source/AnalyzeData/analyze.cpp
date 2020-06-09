@@ -316,7 +316,7 @@ int main() {
 			myfile << endl;
 		}
 	} else {
-		cout << "###1: no email found" << endl;
+		myfile << "###1: no email found" << endl;
 	}
 
 
@@ -333,7 +333,7 @@ int main() {
 			}
 		}
 	} else {
-		cout << "###2: no credit card found" << endl;
+		myfile << "###2: no credit card found" << endl;
 	}
 	
 
@@ -366,7 +366,7 @@ int main() {
 			myfile << endl;
 		}
 	} else {
-		cout << "###3: no states found" << endl;
+		myfile << "###3: no states found" << endl;
 	}
 
 
@@ -389,7 +389,7 @@ int main() {
 			myfile << endl;
 		}
 	} else {
-		cout << "###4: no connection login found" << endl;
+		myfile << "###4: no connection login found" << endl;
 	}
 
 	myfile.close();
