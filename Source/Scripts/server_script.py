@@ -43,15 +43,6 @@ except ImportError:
     install("tweepy")
     import tweepy
 
-
-def getConfig():
-    #TODO get information from configuration file
-    pass
-
-def updateConfig():
-    #TODO update configuration file
-    pass
-
 #reveal hidden message from image
 def deStenographizeImage(ImagePath):
     revealedMessage = lsb.reveal(ImagePath)

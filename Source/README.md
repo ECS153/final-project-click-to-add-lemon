@@ -14,23 +14,18 @@ You can double check to see if the kernel was loaded properly by checking if the
 
 `$ lsmod`
 
-Printk messages from the code can be seen with (Printf is not available for kernel modules):
-
-`$ dmesg`
-
 Keylogger module can be removed with:
 
 `$ sudo rmmod keylog`
 
-To see the logged file 
-`sudo cat /proc/buffer_file`
+To see the logged file:
 
-The logged file will then be encrypted with
-`openssl enc -pass pass:password -aes-128-cbc -a -A -in out.txt -out encrypted.txt -nosalt`
-where password can be of any choice. This command is in linux distro
+`$ sudo cat /proc/buffer_file`
 
-`openssl enc -d -pass pass:password -aes-128-cbc -a -A -in encrypted.txt -out new.txt -nosalt`
+The logged file will then be encrypted and decrypted with:
 
-add `-p` flag for seeing the key used for encrypting
+`$ openssl enc -pass pass:password -aes-128-cbc -a -A -in out.txt -out encrypted.txt -nosalt`
+
+`$ openssl enc -d -pass pass:password -aes-128-cbc -a -A -in encrypted.txt -out new.txt -nosalt`
 
 Tweets are published to: [Link](https://twitter.com/Lemon12776532)
