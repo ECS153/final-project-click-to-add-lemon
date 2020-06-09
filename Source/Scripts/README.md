@@ -10,3 +10,11 @@ In order not to bombard with tweets, the script perform some check. If the log f
 # server_script.py
 
 This is the script used for gathering the data from Twitter and decrypting into a readable file. 
+
+# config (configuration file)
+
+New addition for easier change in configuration of the script. This configuration file is used to change the API keys of the twitter bot, scheduling time, AES password, memeURL, etc. You can add a new configuration by the following format. 
+
+[ key ] = [ value ] 
+
+The script contains a function to parse the configuration file and store into a dictionary for easy usage. The parser separates key-value pairs with delimiter '=' so becareful when you have '=' sign on a value because this will remove it. 

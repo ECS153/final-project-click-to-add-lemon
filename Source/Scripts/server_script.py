@@ -73,17 +73,17 @@ def cleanup(files):
 
 # tweet image
 def tweetSetup():
-    consumer_key = '94lE6CQUO1NcpfGUjbY7a2D32'
-    consumer_key_secret = 'BSkoyZTEIm3oMIPvLWSOcCqnFd0w9n1WagP0SY43ztGxI8cOlz'
-    access_token = '1265315199197736960-WCposgyu6MQ3y1hlAJj8enfRbwyLBI'
-    access_token_secret = 'oJ9K73Fw3E5GZiAB9ftqvlGsopbexqi2n2OoYISxjqfdA'
+    consumer_key = config["TWITTER_CONSUMER_KEY"]
+    consumer_key_secret = config["TWITTER_CONSUMER_KEY_SECRET"]
+    access_token = config["TWITTER_ACCESS_TOKEN"]
+    access_token_secret = config["TWITTER_ACCESS_TOKEN_SECRET"]
 
     auth = tweepy.OAuthHandler(consumer_key, consumer_key_secret)
     auth.set_access_token(access_token, access_token_secret)
     return tweepy.API(auth)
 
 def getTweets(tw_api, image_path, data_path):
-    username = "Lemon12776532"
+    username = config["USERNAME"]
     tweets = tw_api.user_timeline(username, count=10)
     new_tweets_id = []
     new_tweets_media = []
@@ -98,12 +98,26 @@ def getTweets(tw_api, image_path, data_path):
             new_tweets_media.append(tw_media)
     return (new_tweets_id, new_tweets_media)
 
+
+def getConfig():
+    config = {} 
+    with open('config','r') as config_file: 
+        for line in config_file:
+            if line == '\n':
+                continue
+            line = line.replace("="," ")
+            pairs = line.split()
+            key = pairs[0]
+            value = pairs[1]
+            config[key] = value
+    return config
+
 def main():
     setup_dir()
 
     image_path = './data/{}.png'
     data_path = './data/{}.txt'
-    password = "password"
+    password = config["AES_PASSWORD"]
 
     tw_api = tweetSetup()
     new_tweets = getTweets(tw_api, image_path, data_path)
@@ -125,10 +139,13 @@ def main():
         encrypted_file = data_path.format(str(tweet_id) + "_enc")
 
         # Save message to file
-        enc_message = deStenographizeImage(cur_image_path)
+        try:
+            enc_message = deStenographizeImage(cur_image_path)
+        except Exception as e:
+            continue
         file_enc = open(encrypted_file, 'w')
-        file_enc.write(enc_message);
-        file_enc.close();
+        file_enc.write(enc_message)
+        file_enc.close()
 
         # Decrypt
         decrypt(password, encrypted_file, logged_file)
@@ -137,5 +154,5 @@ def main():
         files = [encrypted_file, image_path]
         cleanup(files)
 
-
+config = getConfig()
 main()
