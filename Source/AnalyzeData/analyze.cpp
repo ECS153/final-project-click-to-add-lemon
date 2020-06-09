@@ -281,7 +281,6 @@ vector<long long> GetStringByNumArr(string str) {
 			}
 		}
 		if (!tempnum.empty()) {
-			//cout << "tempnum : " << string(tempnum.begin(), tempnum.end()) << endl;
 			numlist.push_back(stoll(string(tempnum.begin(), tempnum.end())));
 		}
 	}
@@ -338,10 +337,7 @@ int main() {
 	
 
 	//3. Living adress and phone number
-	// cout << states_initial[0] << states_initial[1] << endl;
-	// cout << states_zip[0] << states_zip[1] << endl;
-	int state_number = sizeof(states_initial)/24;
-	// cout << state_number << endl;
+	int state_number = 114;
 	vector<int> foundStateList;
 	for (int i = 0; i < state_number; i++) {
 		size_t found = 0;
